@@ -17,6 +17,8 @@ Route::get('/notes', [NoteController::class, 'index'])->name('index');
 
 Route::get('/task', [NoteController::class, 'index'])->name('index');
 
+Route::get('/var', [NoteController::class, 'index'])->name('index');
+
 // Formulaire création
 Route::get('/notes/create', [NoteController::class, 'create'])->name('create');
 
