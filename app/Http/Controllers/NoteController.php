@@ -25,9 +25,14 @@ class NoteController extends Controller
     // 📌 Enregistrer une note
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|max:255',
+       $request->validate([
+            'title' => 'required|max:255',  // règles de validation
             'content' => 'required',
+        ], [
+            // messages d’erreur personnalisés
+            'title.required' => 'Le titre est obligatoire.',
+            'title.max' => 'Le titre ne peut pas dépasser 255 caractères.',
+            'content.required' => 'Le contenu de la note est obligatoire.',
         ]);
 
         Note::create($request->all());
@@ -51,8 +56,13 @@ class NoteController extends Controller
     public function update(Request $request, Note $note)
     {
         $request->validate([
-            'title' => 'required|max:255',
+            'title' => 'required|max:255',  // règles de validation
             'content' => 'required',
+        ], [
+            // messages d’erreur personnalisés
+            'title.required' => 'Le titre est obligatoire.',
+            'title.max' => 'Le titre ne peut pas dépasser 255 caractères.',
+            'content.required' => 'Le contenu de la note est obligatoire.',
         ]);
 
         $note->update($request->all());

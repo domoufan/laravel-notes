@@ -6,6 +6,7 @@
 <div class="card">
     <div class="card-body">
         <form action="{{ route('notes.update', $note->id) }}" method="POST">
+            @csrf
             @method('PUT')
             @include('form')
         </form>
