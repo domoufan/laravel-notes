@@ -1,36 +1,36 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
+// Page d'accueil
 Route::get('/', function () {
     return view('welcome');
 });
-use App\Http\Controllers\NoteController;
 
-Route::resource('notes', NoteController::class);
+// Tableau de bord (protégé par authentification et vérification d’email)
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
+// Routes accessibles uniquement si l’utilisateur est connecté
+Route::middleware('auth')->group(function () {
+    // Page profil
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
- 
-// Liste des notes
+    // ✅ Déconnexion (protégée aussi par middleware auth)
+    Route::post('/deconnexion', [AuthController::class, 'logout'])->name('logout');
+});
 
-Route::get('/notes', [NoteController::class, 'index'])->name('index');
+// Inclusion des routes d'auth Laravel Breeze (login/register par défaut)
+require __DIR__.'/auth.php';
 
-Route::get('/task', [NoteController::class, 'index'])->name('index');
+// ✅ Routes publiques (sans authentification)
+Route::get('/inscription', [AuthController::class, 'showRegister'])->name('register.show');
+Route::post('/inscription', [AuthController::class, 'register'])->name('register');
 
-// Formulaire création
-Route::get('/notes/create', [NoteController::class, 'create'])->name('create');
-
-// Enregistrer une nouvelle note
-Route::post('/notes', [NoteController::class, 'store'])->name('store');
-
-// Voir le détail d’une note
-Route::get('/notes/{note}', [NoteController::class, 'show'])->name('show');
-
-// Formulaire modification
-Route::get('/notes/{note}/edit', [NoteController::class, 'edit'])->name('edit');
-
-// Mettre à jour une note
-Route::put('/notes/{note}', [NoteController::class, 'update'])->name('update');
-
-// Supprimer une note
-Route::delete('/notes/{note}', [NoteController::class, 'destroy'])->name('destroy');
+Route::get('/connexion', [AuthController::class, 'showLogin'])->name('login.show');
+Route::post('/connexion', [AuthController::class, 'login'])->name('login');
