@@ -4,17 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Note;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreNoteRequest; // ✅ à ajouter
 
 class NoteController extends Controller
 {
     // 📌 Liste des notes
     public function index()
-{
-    // Mauvais : $notes = Note::all();
-    $notes = Note::paginate(10); // 10 notes par page
-    return view('index', compact('notes'));
-}
-
+    {
+        $notes = Note::paginate(10);
+        return view('index', compact('notes'));
+    }
 
     // 📌 Formulaire création
     public function create()
@@ -23,14 +22,9 @@ class NoteController extends Controller
     }
 
     // 📌 Enregistrer une note
-    public function store(Request $request)
+    public function store(StoreNoteRequest $request) // ✅ on utilise la classe de validation
     {
-        $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-        ]);
-
-        Note::create($request->all());
+        Note::create($request->validated()); // ✅ seules les données validées sont utilisées
 
         return redirect()->route('index')->with('success', 'Note créée avec succès !');
     }
@@ -48,16 +42,11 @@ class NoteController extends Controller
     }
 
     // 📌 Mettre à jour
-    public function update(Request $request, Note $note)
+    public function update(StoreNoteRequest $request, Note $note) // ✅ réutilisation de la validation
     {
-        $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-        ]);
+        $note->update($request->validated());
 
-        $note->update($request->all());
-
-        return redirect()->route('index')->with('success', 'Note mise à jour !');
+        return redirect()->route('index')->with('success', 'Note mise à jour avec succès !');
     }
 
     // 📌 Supprimer
@@ -65,6 +54,6 @@ class NoteController extends Controller
     {
         $note->delete();
 
-        return redirect()->route('index')->with('success', 'Note supprimée !');
+        return redirect()->route('index')->with('success', 'Note supprimée avec succès !');
     }
 }
