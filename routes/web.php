@@ -1,28 +1,20 @@
 <?php
-
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-require __DIR__.'/auth.php';
 use App\Http\Controllers\NoteController;
 
-Route::middleware('auth')->group(function () {
-    Route::resource('notes', NoteController::class);
+Route::middleware(['auth'])->group(function () {
+
+    // Accessible uniquement aux admins
+    Route::middleware(['role:admin'])->group(function () {
+        Route::resource('notes', NoteController::class);
+    });
+
+    // Exemple : page visible seulement par les professeurs
+    Route::get('/dashboard-prof', function () {
+        return view('prof.dashboard');
+    })->middleware('role:professeur');
+
+    // Exemple : page visible seulement par les étudiants
+    Route::get('/dashboard-etudiant', function () {
+        return view('etudiant.dashboard');
+    })->middleware('role:etudiant');
 });
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');

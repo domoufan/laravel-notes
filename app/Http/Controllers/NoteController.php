@@ -4,10 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Note;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreNoteRequest; // ✅ à ajouter
+use App\Http\Requests\StoreNoteRequest;
 
 class NoteController extends Controller
 {
+    // ✅ Middleware d’authentification
+       public function __construct()
+{
+    $this->middleware('auth');
+
+    // Seuls les admins peuvent créer, modifier ou supprimer
+    $this->middleware('role:admin')->only(['create', 'store', 'edit', 'update', 'destroy']);
+}
+
     // 📌 Liste des notes
     public function index()
     {
@@ -22,10 +31,9 @@ class NoteController extends Controller
     }
 
     // 📌 Enregistrer une note
-    public function store(StoreNoteRequest $request) // ✅ on utilise la classe de validation
+    public function store(StoreNoteRequest $request)
     {
-        Note::create($request->validated()); // ✅ seules les données validées sont utilisées
-
+        Note::create($request->validated());
         return redirect()->route('index')->with('success', 'Note créée avec succès !');
     }
 
@@ -42,10 +50,9 @@ class NoteController extends Controller
     }
 
     // 📌 Mettre à jour
-    public function update(StoreNoteRequest $request, Note $note) // ✅ réutilisation de la validation
+    public function update(StoreNoteRequest $request, Note $note)
     {
         $note->update($request->validated());
-
         return redirect()->route('index')->with('success', 'Note mise à jour avec succès !');
     }
 
@@ -53,15 +60,9 @@ class NoteController extends Controller
     public function destroy(Note $note)
     {
         $note->delete();
-
         return redirect()->route('index')->with('success', 'Note supprimée avec succès !');
     }
-    use App\Http\Controllers\NoteController;
 
 
-public function __construct()
-{
-    $this->middleware('auth');
+
 }
-}
-
