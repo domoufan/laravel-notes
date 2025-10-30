@@ -56,4 +56,12 @@ class NoteController extends Controller
 
         return redirect()->route('index')->with('success', 'Note supprimée avec succès !');
     }
+    use App\Http\Controllers\NoteController;
+
+
+public function __construct()
+{
+    $this->middleware('auth');
 }
+}
+

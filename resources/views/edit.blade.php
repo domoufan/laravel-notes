@@ -5,7 +5,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form action="{{ route('notes.update', $note->id) }}" method="POST">
+        <form action="{{ route('update', $note->id) }}" method="POST">
             @method('PUT')
             @include('form')
         </form>
