@@ -45,4 +45,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    use Spatie\Permission\Traits\HasRoles;
+
+
 }
+class User extends Authenticatable
+{
+    use HasRoles;
+}
+$user = App\Models\User::find(1);
+$user->assignRole('admin');
