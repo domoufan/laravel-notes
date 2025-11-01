@@ -1,20 +1,11 @@
-<?php
+<?php 
 use App\Http\Controllers\NoteController;
 
 Route::middleware(['auth'])->group(function () {
+    Route::resource('notes', NoteController::class);
 
-    // Accessible uniquement aux admins
-    Route::middleware(['role:admin'])->group(function () {
-        Route::resource('notes', NoteController::class);
-    });
-
-    // Exemple : page visible seulement par les professeurs
-    Route::get('/dashboard-prof', function () {
-        return view('prof.dashboard');
-    })->middleware('role:professeur');
-
-    // Exemple : page visible seulement par les étudiants
-    Route::get('/dashboard-etudiant', function () {
-        return view('etudiant.dashboard');
-    })->middleware('role:etudiant');
+    // Routes pour la corbeille
+    Route::get('notes-supprimees', [NoteController::class, 'trash'])->name('notes.trash');
+    Route::post('notes/{id}/restore', [NoteController::class, 'restore'])->name('notes.restore');
+    Route::delete('notes/{id}/force-delete', [NoteController::class, 'forceDelete'])->name('notes.forceDelete');
 });
