@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Note;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreNoteRequest;
 
 class NoteController extends Controller
 {
@@ -23,17 +24,12 @@ class NoteController extends Controller
     }
 
     // 📌 Enregistrer une note
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-        ]);
+   public function store(StoreNoteRequest $request)
+{
+    Note::create($request->validated()); // ✅ Données déjà validées
 
-        Note::create($request->all());
-
-        return redirect()->route('index')->with('success', 'Note créée avec succès !');
-    }
+    return redirect()->route('index')->with('success', 'Note créée avec succès !');
+}
 
     // 📌 Voir le détail
     public function show(Note $note)
